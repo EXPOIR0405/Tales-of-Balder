@@ -1,0 +1,170 @@
+/* 기본 스타일 */
+:root {
+    --bg3-gold: #C4A484;
+    --bg3-dark: #1A0F0F;
+    --bg3-red: #8B0000;
+    --bg3-green: #2E8B57;
+}
+
+body {
+    font-family: 'Times New Roman', serif;
+    color: var(--bg3-gold);
+    background-color: var(--bg3-dark);
+}
+
+/* 게임 컨테이너 */
+.game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* 대화창 스타일 */
+.dialogue-box {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(196, 164, 132, 0.3);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* 선택지 버튼 스타일 */
+.choice-button {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    background: rgba(196, 164, 132, 0.1);
+    border: 1px solid rgba(196, 164, 132, 0.3);
+    color: var(--bg3-gold);
+    transition: all 0.2s ease;
+}
+
+.choice-button:hover {
+    background: rgba(196, 164, 132, 0.2);
+    border-color: var(--bg3-gold);
+}
+
+.choice-button.danger {
+    color: var(--bg3-red);
+}
+
+.choice-button.danger:hover {
+    background: rgba(139, 0, 0, 0.2);
+}
+
+/* 상태 표시바 */
+.status-bar {
+    width: 100%;
+    height: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(196, 164, 132, 0.3);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.health-bar {
+    height: 100%;
+    background: var(--bg3-red);
+    transition: width 0.3s ease;
+}
+
+/* 인벤토리 슬롯 */
+.inventory-slot {
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid rgba(196, 164, 132, 0.3);
+    background: rgba(0, 0, 0, 0.5);
+    margin: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.inventory-slot:hover {
+    border-color: var(--bg3-gold);
+    box-shadow: 0 0 10px rgba(196, 164, 132, 0.3);
+}
+
+/* 메뉴 버튼 */
+.menu-button {
+    padding: 0.5rem 1rem;
+    background: rgba(196, 164, 132, 0.1);
+    border: 1px solid rgba(196, 164, 132, 0.3);
+    color: var(--bg3-gold);
+    margin: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.menu-button:hover {
+    background: rgba(196, 164, 132, 0.2);
+    border-color: var(--bg3-gold);
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 대화창 애니메이션 */
+.dialogue-box {
+    animation: fadeIn 0.3s ease;
+}
+
+.choice-button {
+    animation: slideIn 0.3s ease;
+}
+
+/* 전투 효과 */
+.combat-effect {
+    position: absolute;
+    pointer-events: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* 모달 스타일 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: var(--bg3-dark);
+    border: 2px solid var(--bg3-gold);
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    animation: slideIn 0.3s ease;
+}
+
+/* 툴팁 스타일 */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid var(--bg3-gold);
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    pointer-events: none;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+} 
