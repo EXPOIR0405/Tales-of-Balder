@@ -18,7 +18,7 @@
 
 ## 실행 방법
 ### 온라인으로 즐기기
-1. [Tales of Balder](https://tales-of-balder.vercel.app/)에 접속하여 바로 게임을 즐길 수 있습니다!
+1. [Tales of Balder](https://tales-of-balder-v10.vercel.app/)에 접속하여 바로 게임을 즐길 수 있습니다!
 
 ### 로컬에서 실행하기
 1. 저장소를 클론합니다
