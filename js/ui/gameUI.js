@@ -4,189 +4,282 @@ export class GameUI {
         this.elements = {};
     }
 
+    // 대화 업데이트 함수 추가
+    updateDialog(npcName, text, choices) {
+        // 대화창 제목 업데이트
+        this.elements.locationTitle.textContent = npcName;
+        
+        // 대화 내용 업데이트
+        this.elements.descriptionText.textContent = text;
+        
+        // 선택지 업데이트
+        this.elements.choicesContainer.innerHTML = '';
+        if (choices) {
+            choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.className = 'choice-button';
+                button.textContent = choice.text;
+                button.onclick = () => {
+                    if (choice.action) {
+                        choice.action();
+                    } else if (choice.next) {
+                        this.game.dialogue.showDialogue(choice.next);
+                    }
+                };
+                this.elements.choicesContainer.appendChild(button);
+            });
+        }
+    }
+
+    // 대화창 닫기 함수 추가
+    closeDialog() {
+        // 원래 위치 정보로 되돌리기
+        this.updateUI();
+        this.showChoices(this.game.state.currentLocation.choices);
+    }
+
     init() {
         // 메인 UI 구조 생성
         document.getElementById('game-container').innerHTML = `
-            <!-- 상단 상태바 -->
-            <div class="fixed top-4 left-4 right-4 flex justify-between items-center">
-                <div class="status-bar-container">
-                    <div class="text-bg3-gold mb-1">HP: <span id="player-hp">100/100</span></div>
-                    <div class="status-bar">
-                        <div id="hp-bar" class="health-bar" style="width: 100%"></div>
+            <div class="game-container">
+                <!-- 상단 상태바 -->
+                <div class="fixed top-4 left-4 right-4 flex justify-between items-center">
+                    <div class="status-bar-container">
+                        <div class="text-bg3-gold mb-1">HP: <span id="player-hp">100/100</span></div>
+                        <div class="status-bar">
+                            <div id="hp-bar" class="health-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 메뉴 버튼들 -->
+                    <div class="flex gap-2">
+                        <button id="save-button" class="menu-button">저장</button>
+                        <button id="load-button" class="menu-button">불러오기</button>
+                        <button id="inventory-button" class="menu-button">인벤토리</button>
                     </div>
                 </div>
-                
-                <!-- 메뉴 버튼들 -->
-                <div class="flex gap-2">
-                    <button id="save-button" class="menu-button">저장</button>
-                    <button id="load-button" class="menu-button">불러오기</button>
-                    <button id="inventory-button" class="menu-button">인벤토리</button>
-                </div>
-            </div>
 
-            <!-- 메인 게임 화면 -->
-            <div class="max-w-2xl mx-auto mt-20 mb-32">
-                <!-- 위치 정보 -->
-                <h2 id="location-title" class="text-2xl font-serif mb-4 text-bg3-gold"></h2>
-                
-                <!-- 대화/설명창 -->
-                <div id="dialogue-box" class="dialogue-box mb-4">
-                    <p id="description-text"></p>
+                <!-- 메인 게임 화면 -->
+                <div class="max-w-2xl mx-auto mt-20 mb-32">
+                    <!-- 위치 정보 -->
+                    <h2 id="location-title" class="text-2xl font-serif mb-4 text-bg3-gold"></h2>
+                    
+                    <!-- 대화/설명창 -->
+                    <div id="dialogue-box" class="dialogue-box mb-4">
+                        <p id="description-text"></p>
+                    </div>
+
+                    <!-- 선택지 컨테이너 -->
+                    <div id="choices-container" class="space-y-2"></div>
                 </div>
 
-                <!-- 선택지 컨테이너 -->
-                <div id="choices-container" class="space-y-2"></div>
-            </div>
-
-            <!-- 하단 인벤토리 바 -->
-            <div class="fixed bottom-0 left-0 right-0 bg-black/80 border-t border-bg3-gold/30 p-2">
-                <div id="quick-inventory" class="flex justify-center space-x-2">
-                    ${Array(8).fill(0).map(() => `
-                        <div class="inventory-slot"></div>
-                    `).join('')}
-                </div>
-            </div>
-
-            <!-- 모달 컨테이너 -->
-            <div id="modal-container" class="modal hidden">
-                <div class="modal-content">
-                    <h3 id="modal-title" class="text-xl mb-4"></h3>
-                    <div id="modal-content"></div>
-                    <button id="modal-close" class="menu-button mt-4">닫기</button>
+                <!-- 하단 인벤토리 바 -->
+                <div class="fixed bottom-0 left-0 right-0 bg-black/80 border-t border-bg3-gold/30 p-2">
+                    <div id="quick-inventory" class="flex justify-center space-x-2">
+                        ${Array(8).fill(0).map(() => `
+                            <div class="inventory-slot"></div>
+                        `).join('')}
+                    </div>
                 </div>
             </div>
         `;
 
-        // 요소 참조 저장
+        // 요소 참조 저장 - 콘솔로그 추가
         this.elements = {
             playerHp: document.getElementById('player-hp'),
             hpBar: document.getElementById('hp-bar'),
             locationTitle: document.getElementById('location-title'),
             descriptionText: document.getElementById('description-text'),
             choicesContainer: document.getElementById('choices-container'),
-            modalContainer: document.getElementById('modal-container'),
-            modalTitle: document.getElementById('modal-title'),
-            modalContent: document.getElementById('modal-content')
+            saveButton: document.getElementById('save-button'),
+            loadButton: document.getElementById('load-button')
         };
 
-        this.setupEventListeners();
-        this.updateUI();
-    }
+        console.log('Save button:', this.elements.saveButton); // 디버깅
+        console.log('Load button:', this.elements.loadButton); // 디버깅
 
-    setupEventListeners() {
-        // 저장 버튼
-        document.getElementById('save-button').addEventListener('click', () => {
-            this.showSaveModal();
-        });
+        // 저장/불러오기 버튼 이벤트 리스너
+        const saveButton = document.getElementById('save-button');
+        const loadButton = document.getElementById('load-button');
 
-        // 불러오기 버튼
-        document.getElementById('load-button').addEventListener('click', () => {
-            this.showLoadModal();
-        });
+        if (saveButton) {
+            saveButton.addEventListener('click', () => {
+                console.log('Save button clicked');
+                this.showSaveLoadWindow('save');
+            });
+        }
 
-        // 인벤토리 버튼
+        if (loadButton) {
+            loadButton.addEventListener('click', () => {
+                console.log('Load button clicked');
+                this.showSaveLoadWindow('load');
+            });
+        }
+
+        // 이벤트 리스너 설정
         document.getElementById('inventory-button').addEventListener('click', () => {
-            this.showInventory();
+            alert('인벤토리는 아직 구현되지 않았습니다.');
         });
 
-        // 모달 닫기
-        document.getElementById('modal-close').addEventListener('click', () => {
-            this.hideModal();
-        });
+        // HP 표시 업데이트
+        this.updateHP();
     }
 
+    updateHP() {
+        if (this.game && this.game.state) {
+            const hp = this.game.state.hp || 0;
+            const maxHp = this.game.state.maxHp || 100;
+            if (this.elements.playerHp) {
+                this.elements.playerHp.textContent = `${hp}/${maxHp}`;
+            }
+            if (this.elements.hpBar) {
+                this.elements.hpBar.style.width = `${(hp / maxHp) * 100}%`;
+            }
+        }
+    }
+
+    // UI 업데이트 시 HP도 함께 업데이트
     updateUI() {
         const state = this.game.state;
-        
-        // HP 업데이트
-        this.elements.playerHp.textContent = `${state.hp}/${state.maxHp}`;
-        this.elements.hpBar.style.width = `${(state.hp / state.maxHp) * 100}%`;
-
-        // 위치 정보 업데이트
-        this.elements.locationTitle.textContent = state.currentLocation.title;
-        this.elements.descriptionText.textContent = state.currentLocation.description;
+        if (state.currentLocation) {  // null 체크 추가
+            this.elements.locationTitle.textContent = state.currentLocation.title || '';
+            this.elements.descriptionText.textContent = state.currentLocation.description || '';
+            this.elements.playerHp.textContent = `${state.hp}/${state.maxHp}`;
+            this.elements.hpBar.style.width = `${(state.hp / state.maxHp) * 100}%`;
+        }
+        this.updateHP();
     }
 
     showChoices(choices) {
-        this.elements.choicesContainer.innerHTML = '';
+        if (!choices) return;  // null 체크 추가
         
+        this.elements.choicesContainer.innerHTML = '';
         choices.forEach(choice => {
-            if (!choice.condition || choice.condition()) {
-                const button = document.createElement('button');
-                button.className = `choice-button ${choice.type === 'danger' ? 'danger' : ''}`;
-                button.innerHTML = `<span class="mr-2">➤</span>${choice.text}`;
-                button.addEventListener('click', () => choice.action());
-                this.elements.choicesContainer.appendChild(button);
-            }
+            const button = document.createElement('button');
+            button.className = 'choice-button';
+            button.textContent = choice.text;
+            button.onclick = () => choice.action();
+            this.elements.choicesContainer.appendChild(button);
         });
     }
 
-    showModal(title, content) {
-        this.elements.modalTitle.textContent = title;
-        this.elements.modalContent.innerHTML = content;
-        this.elements.modalContainer.classList.remove('hidden');
-    }
-
-    hideModal() {
-        this.elements.modalContainer.classList.add('hidden');
-    }
-
-    showSaveModal() {
-        const saveSlots = Array(5).fill(0).map((_, i) => {
-            const savedData = this.game.save.getSaveData(i + 1);
-            return `
-                <button class="choice-button mb-2" onclick="game.save.saveGame(${i + 1})">
-                    슬롯 ${i + 1} ${savedData ? `- ${savedData.timestamp}` : '- 비어있음'}
-                </button>
-            `;
-        }).join('');
-
-        this.showModal('게임 저장', saveSlots);
-    }
-
-    showLoadModal() {
-        const loadSlots = Array(5).fill(0).map((_, i) => {
-            const savedData = this.game.save.getSaveData(i + 1);
-            if (savedData) {
-                return `
-                    <button class="choice-button mb-2" onclick="game.save.loadGame(${i + 1})">
-                        슬롯 ${i + 1} - ${savedData.timestamp}
-                    </button>
-                `;
-            }
-            return `
-                <button class="choice-button mb-2" disabled>
-                    슬롯 ${i + 1} - 비어있음
-                </button>
-            `;
-        }).join('');
-
-        this.showModal('게임 불러오기', loadSlots);
-    }
-
-    showInventory() {
-        const inventory = this.game.state.inventory.map(item => `
-            <div class="flex items-center justify-between p-2 border-b border-bg3-gold/30">
-                <span>${item.name}</span>
-                <button class="menu-button" onclick="game.useItem('${item.id}')">사용</button>
-            </div>
-        `).join('');
-
-        this.showModal('인벤토리', inventory || '인벤토리가 비어있습니다.');
-    }
-
-    // 전투 UI 업데이트
-    updateCombatUI(enemy) {
-        if (enemy) {
-            const enemyHealth = `
-                <div class="mb-4">
-                    <div class="text-bg3-gold mb-1">${enemy.name} HP: ${enemy.hp}/${enemy.maxHp}</div>
-                    <div class="status-bar">
-                        <div class="health-bar" style="width: ${(enemy.hp / enemy.maxHp) * 100}%"></div>
-                    </div>
+    showSaveLoadWindow(mode = 'save') {
+        console.log('Creating save/load window');
+        
+        const isSave = mode === 'save';
+        const title = isSave ? '저장하기' : '불러오기';
+        
+        // 기존 창이 있다면 제거
+        this.closeSaveLoadWindow();
+        
+        // 기존 저장 데이터 불러오기
+        const saves = JSON.parse(localStorage.getItem('gameSaves') || '{}');
+        
+        // div 요소 직접 생성
+        const windowElement = document.createElement('div');
+        windowElement.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50';
+        
+        windowElement.innerHTML = `
+            <div class="bg-bg3-dark border-2 border-bg3-gold/50 p-4 max-w-md w-full">
+                <h2 class="text-bg3-gold text-xl mb-4">${title}</h2>
+                <div class="space-y-2 mb-4">
+                    ${Array(3).fill(0).map((_, i) => {
+                        const save = saves[`slot${i + 1}`];
+                        const date = save ? new Date(save.timestamp).toLocaleString() : '비어있음';
+                        const details = save ? `Gold: ${save.gold} | HP: ${save.hp}/${save.maxHp}` : '';
+                        return `
+                            <div class="flex items-center gap-2">
+                                <button class="save-slot flex-grow text-left p-2 border border-bg3-gold/30 hover:bg-bg3-gold/20"
+                                        data-slot="${i + 1}">
+                                    저장 슬롯 ${i + 1}
+                                    <div class="text-sm text-gray-400">${date}</div>
+                                    <div class="text-sm text-bg3-gold">${details}</div>
+                                </button>
+                                ${save ? `
+                                    <button class="delete-slot bg-red-500/50 hover:bg-red-500 text-white px-2 py-1 rounded"
+                                            data-slot="${i + 1}">삭제</button>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('')}
                 </div>
-            `;
-            this.elements.descriptionText.innerHTML = enemyHealth + this.elements.descriptionText.innerHTML;
+                <button class="close-window menu-button">닫기</button>
+            </div>
+        `;
+
+        // 창을 body에 추가
+        document.body.appendChild(windowElement);
+
+        // 이벤트 리스너 추가
+        const self = this;
+        
+        // 저장/불러오기 버튼
+        windowElement.querySelectorAll('.save-slot').forEach(button => {
+            button.addEventListener('click', function() {
+                const slot = this.dataset.slot;
+                if (isSave && saves[`slot${slot}`]) {
+                    if (confirm('이미 저장된 데이터가 있습니다. 덮어쓰시겠습니까?')) {
+                        self.handleSaveLoad(slot, mode);
+                    }
+                } else {
+                    self.handleSaveLoad(slot, mode);
+                }
+            });
+        });
+
+        // 삭제 버튼
+        windowElement.querySelectorAll('.delete-slot').forEach(button => {
+            button.addEventListener('click', function() {
+                const slot = this.dataset.slot;
+                if (confirm('정말로 이 저장 데이터를 삭제하시겠습니까?')) {
+                    delete saves[`slot${slot}`];
+                    localStorage.setItem('gameSaves', JSON.stringify(saves));
+                    self.showSaveLoadWindow(mode); // 창 새로고침
+                }
+            });
+        });
+
+        // 닫기 버튼
+        const closeButton = windowElement.querySelector('.close-window');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                this.closeSaveLoadWindow();
+            });
         }
     }
-} 
+
+    handleSaveLoad(slot, mode) {
+        const saves = JSON.parse(localStorage.getItem('gameSaves') || '{}');
+        
+        if (mode === 'save') {
+            // 현재 게임 상태 저장
+            const saveData = this.game.state.saveGame(); // saveGame 메서드 사용
+            saveData.timestamp = Date.now();
+            saves[`slot${slot}`] = saveData;
+            localStorage.setItem('gameSaves', JSON.stringify(saves));
+            alert(`슬롯 ${slot}에 저장되었습니다!`);
+        } else {
+            // 저장된 데이터 불러오기
+            const saveData = saves[`slot${slot}`];
+            if (saveData) {
+                // loadGame 메서드 사용
+                if (this.game.state.loadGame(saveData)) {
+                    this.updateUI();
+                    if (this.game.state.currentLocation) {
+                        this.showChoices(this.game.state.currentLocation.choices);
+                    }
+                    alert(`슬롯 ${slot}에서 불러왔습니다!`);
+                }
+            }
+        }
+        
+        this.closeSaveLoadWindow();
+    }
+
+    closeSaveLoadWindow() {
+        const existingWindow = document.querySelector('.fixed.inset-0');
+        if (existingWindow) {
+            existingWindow.remove();
+        }
+    }
+}

@@ -168,3 +168,8 @@ body {
     z-index: 1000;
     animation: fadeIn 0.2s ease;
 } 
+
+#notification {
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
