@@ -126,10 +126,36 @@ export class DialogueLogic {
             img.dataset.itemId = itemData.id;
             emptySlot.appendChild(img);
             
-            // 툴팁 추가 (아이템 설명)
+            // 툴팁 구조 개선
             const tooltip = document.createElement('div');
             tooltip.className = 'item-tooltip';
-            tooltip.textContent = `${itemData.name}\n${itemData.description}`;
+            
+            // 이미지 섹션
+            const imageSection = document.createElement('div');
+            imageSection.className = 'tooltip-image';
+            const tooltipImg = document.createElement('img');
+            tooltipImg.src = itemData.image;
+            tooltipImg.alt = itemData.name;
+            imageSection.appendChild(tooltipImg);
+            
+            // 텍스트 섹션
+            const textSection = document.createElement('div');
+            textSection.className = 'tooltip-text';
+            
+            const title = document.createElement('div');
+            title.className = 'tooltip-title';
+            title.textContent = itemData.name;
+            
+            const description = document.createElement('div');
+            description.className = 'tooltip-description';
+            description.textContent = itemData.description;
+            
+            textSection.appendChild(title);
+            textSection.appendChild(description);
+            
+            // 조립
+            tooltip.appendChild(imageSection);
+            tooltip.appendChild(textSection);
             emptySlot.appendChild(tooltip);
         }
 

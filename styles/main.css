@@ -90,28 +90,69 @@ body {
     box-shadow: 0 0 10px rgba(196, 164, 132, 0.3);
 }
 
-/* 아이템 툴팁 */
+/* 아이템 툴팁 개선 */
 .item-tooltip {
     display: none;
     position: absolute;
     bottom: 120%;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     border: 1px solid var(--bg3-gold);
-    padding: 0.5rem;
+    padding: 1rem;
     border-radius: 4px;
-    white-space: pre-line;
     z-index: 1000;
     color: var(--bg3-gold);
     font-size: 0.9rem;
-    text-align: center;
-    min-width: 150px;
+    width: 300px;  /* 툴팁 너비 고정 */
+    
+    /* 플렉스 컨테이너로 변경 */
+    display: none;
+    flex-direction: row;
+    align-items: start;
+    gap: 1rem;
+}
+
+/* 툴팁 이미지 컨테이너 */
+.tooltip-image {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.tooltip-image img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+/* 툴팁 텍스트 컨테이너 */
+.tooltip-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tooltip-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--bg3-gold);
+}
+
+.tooltip-description {
+    font-size: 0.9rem;
+    color: #d4b886;
+    line-height: 1.4;
 }
 
 /* 호버 시 툴팁 표시 */
 .inventory-slot:hover .item-tooltip {
-    display: block;
+    display: flex;
 }
 
 /* 메뉴 버튼 */
