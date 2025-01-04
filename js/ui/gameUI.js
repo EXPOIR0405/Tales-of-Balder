@@ -6,24 +6,25 @@ export class GameUI {
 
     // 대화 업데이트 함수 추가
     updateDialog(npcName, text, choices) {
-        // NPC 이미지 업데이트
+        // NPC 이미지 업데이트 - 수정된 부분
         const npcImage = document.getElementById('npc-image');
         const npcData = Object.values(this.game.dialogue.dialogues).find(
             npc => npc.name === npcName
         );
 
-        // 이전 이미지 즉시 제거
-        npcImage.classList.add('hidden');
-        npcImage.src = '';  // 이미지 소스 초기화
-
-        if (npcData && npcData.image) {
-            // 새 이미지 로드
-            const newImage = new Image();
-            newImage.onload = () => {
-                npcImage.src = npcData.image;
-                npcImage.classList.remove('hidden');
-            };
-            newImage.src = npcData.image;
+        // 현재 표시된 NPC와 같은 경우 이미지 업데이트 건너뛰기
+        if (npcImage.dataset.currentNpc !== npcName) {
+            npcImage.classList.add('hidden');
+            
+            if (npcData && npcData.image) {
+                const newImage = new Image();
+                newImage.onload = () => {
+                    npcImage.src = npcData.image;
+                    npcImage.classList.remove('hidden');
+                    npcImage.dataset.currentNpc = npcName;  // 현재 NPC 저장
+                };
+                newImage.src = npcData.image;
+            }
         }
 
         // 이름 업데이트
