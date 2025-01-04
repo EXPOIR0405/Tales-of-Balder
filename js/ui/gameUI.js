@@ -12,11 +12,18 @@ export class GameUI {
             npc => npc.name === npcName
         );
 
+        // 이전 이미지 즉시 제거
+        npcImage.classList.add('hidden');
+        npcImage.src = '';  // 이미지 소스 초기화
+
         if (npcData && npcData.image) {
-            npcImage.src = npcData.image;
-            npcImage.classList.remove('hidden');
-        } else {
-            npcImage.classList.add('hidden');
+            // 새 이미지 로드
+            const newImage = new Image();
+            newImage.onload = () => {
+                npcImage.src = npcData.image;
+                npcImage.classList.remove('hidden');
+            };
+            newImage.src = npcData.image;
         }
 
         // 이름 업데이트
