@@ -20,7 +20,7 @@ export class DialogueSystem {
                 id: 'tom',
                 name: '톰',
                 location: 'tom_stall',  // NPC 위치 ID
-                image: '/game/assets/images/npc/tom.png',
+                image: './assets/images/npc/tom.png',
                 initialDialog: 'tom_greeting',
                 conversations: {
                     tom_greeting: {
