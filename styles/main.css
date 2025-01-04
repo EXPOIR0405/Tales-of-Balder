@@ -64,12 +64,6 @@ body {
     overflow: hidden;
 }
 
-.health-bar {
-    height: 100%;
-    background: var(--bg3-red);
-    transition: width 0.3s ease;
-}
-
 /* 인벤토리 슬롯 */
 .inventory-slot {
     width: 3rem;
@@ -172,4 +166,22 @@ body {
 #notification {
     z-index: 1000;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* NPC 초상화 스타일 */
+.npc-portrait {
+    width: 100px;
+    height: 100px;
+    border: 2px solid var(--bg3-gold);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex-shrink: 0;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(196, 164, 132, 0.3);
+}
+
+/* 대화창 내부 텍스트 영역 조정 */
+#description-text {
+    flex: 1;
 }

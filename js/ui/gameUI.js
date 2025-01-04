@@ -6,6 +6,19 @@ export class GameUI {
 
     // 대화 업데이트 함수 추가
     updateDialog(npcName, text, choices) {
+        this.elements.locationTitle.textContent = npcName;
+        this.elements.descriptionText.textContent = text;
+
+        // NPC 이미지 업데이트
+        const npcImage = document.getElementById('npc-image');
+        if (npcName === '상인') {
+            npcImage.style.backgroundImage = "url('/assets/images/npc/tom.png')";
+            npcImage.classList.remove('hidden');
+        } else {
+            npcImage.classList.add('hidden');
+        }
+
+
         // 대화창 제목 업데이트
         this.elements.locationTitle.textContent = npcName;
         
@@ -33,7 +46,11 @@ export class GameUI {
 
     // 대화창 닫기 함수 추가
     closeDialog() {
-        // 원래 위치 정보로 되돌리기
+        // 대화가 끝난 후 NPC 이미지 숨기기
+        const npcImage = document.getElementById('npc-image');
+        npcImage.classList.add('hidden');
+    
+        // 대화가 끝난 후 원래 위치 정보로 되돌리기
         this.updateUI();
         this.showChoices(this.game.state.currentLocation.choices);
     }
@@ -46,9 +63,7 @@ export class GameUI {
                 <div class="fixed top-4 left-4 right-4 flex justify-between items-center">
                     <div class="status-bar-container">
                         <div class="text-bg3-gold mb-1">HP: <span id="player-hp">100/100</span></div>
-                        <div class="status-bar">
-                            <div id="hp-bar" class="health-bar" style="width: 100%"></div>
-                        </div>
+                        <div class="text-bg3-gold mb-1">Gold: <span id="player-gold">0</span></div>
                     </div>
                     
                     <!-- 메뉴 버튼들 -->
@@ -66,7 +81,10 @@ export class GameUI {
                     
                     <!-- 대화/설명창 -->
                     <div id="dialogue-box" class="dialogue-box mb-4">
-                        <p id="description-text"></p>
+                        <div class="flex items-start gap-4">
+                            <div id="npc-image" class="npc-portrait hidden"></div>
+                            <p id="description-text"></p>
+                        </div>
                     </div>
 
                     <!-- 선택지 컨테이너 -->
@@ -125,6 +143,7 @@ export class GameUI {
         this.updateHP();
     }
 
+
     updateHP() {
         if (this.game && this.game.state) {
             const hp = this.game.state.hp || 0;
@@ -138,16 +157,15 @@ export class GameUI {
         }
     }
 
-    // UI 업데이트 시 HP도 함께 업데이트
+    // 전반적인 UI 업데이트하는 메인함수 (위치, 설명 텍스트, HP, 골드)
     updateUI() {
         const state = this.game.state;
         if (state.currentLocation) {  // null 체크 추가
             this.elements.locationTitle.textContent = state.currentLocation.title || '';
             this.elements.descriptionText.textContent = state.currentLocation.description || '';
             this.elements.playerHp.textContent = `${state.hp}/${state.maxHp}`;
-            this.elements.hpBar.style.width = `${(state.hp / state.maxHp) * 100}%`;
+            document.getElementById('player-gold').textContent = state.gold || 0;
         }
-        this.updateHP();
     }
 
     showChoices(choices) {
