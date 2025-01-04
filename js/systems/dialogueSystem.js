@@ -4,25 +4,40 @@ export class DialogueSystem {
     constructor(gameState) {
         this.gameState = gameState;
         this.dialogues = {};
+        console.log('DialogueSystem initialized');
         this.logic = new DialogueLogic(gameState);
         this.loadDialogues();
     }
 
     async loadDialogues() {
         try {
+            console.log('Loading dialogues...');
             const merchantData = await fetch('/js/data/dialogues/merchant.json')
                 .then(response => response.json());
             this.dialogues.merchant = merchantData;
+            
+            const innkeeperData = await fetch('/js/data/dialogues/innkeeper.json')
+                .then(response => response.json());
+            this.dialogues.innkeeper = innkeeperData;
+            
+            console.log('Loaded dialogues:', this.dialogues);
         } catch (error) {
             console.error('Error loading dialogues:', error);
         }
     }
 
     startDialogue(npcId) {
+        console.log('Starting dialogue with:', npcId);
+        console.log('Available dialogues:', this.dialogues);
+        
         const npc = this.dialogues[npcId];
-        if (!npc) return;
+        if (!npc) {
+            console.error('No dialogue found for NPC:', npcId);
+            return;
+        }
 
         this.currentNPC = npc;
+        console.log('Loading dialogue:', npc.initialDialog);
         this.showDialogue(npc.initialDialog);
     }
 

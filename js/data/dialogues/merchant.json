@@ -64,7 +64,7 @@
                     "text": "아니오, 괜찮습니다",
                     "actionType": "showText",
                     "resultText": "하, 농담하나? 세상에 공짜로 얻을 수 있는 건 없다네. 다시 돌아오게나, 돈이 준비되면.",
-                    "next": "tom_goodbye"
+                    "next": "tom_greeting"
                 }
             ]
         },

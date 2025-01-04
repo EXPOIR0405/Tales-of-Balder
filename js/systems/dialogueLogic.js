@@ -24,8 +24,15 @@ export class DialogueLogic {
                 return this.buyItem(action.itemId, action.cost);
             case 'payForInfo':
                 return this.payForInfo(action.cost, action.resultText);
+            case 'rentRoom':
+                return this.rentRoom(action.cost);
+            case 'buyFood':
+                return this.buyFood(action.itemId, action.cost);
             case 'showText':
-                return { text: action.resultText };
+                return { 
+                    text: action.resultText,
+                    next: action.next
+                };
             case 'endDialogue':
                 return { shouldEnd: true };
             default:
@@ -71,5 +78,71 @@ export class DialogueLogic {
             text: resultText,
             next: "tom_greeting"
         };
+    }
+
+    rentRoom(cost) {
+        if (this.gameState.gold < cost) {
+            return {
+                text: "죄송합니다만... 돈이 부족하신 것 같네요.",
+                next: "kaerun_greeting"
+            };
+        }
+
+        this.gameState.gold -= cost;
+        // 체력 회복 로직 추가 (게임 시스템에 따라 조정 필요)
+        if (this.gameState.health) {
+            this.gameState.health = this.gameState.maxHealth || 100;
+        }
+
+        return {
+            text: "편안히 쉬셨나요? 충분한 휴식이 되셨길 바랍니다...",
+            next: "kaerun_greeting"
+        };
+    }
+
+    buyFood(itemId, cost) {
+        if (this.gameState.gold < cost) {
+            return {
+                text: "죄송합니다만... 돈이 부족하신 것 같네요.",
+                next: "kaerun_greeting"
+            };
+        }
+
+        this.gameState.gold -= cost;
+        
+        // 음식 효과 적용
+        switch(itemId) {
+            case 'evernight_soup':
+                // 체력 회복 +30
+                if (this.gameState.health) {
+                    this.gameState.health = Math.min(
+                        this.gameState.health + 30,
+                        this.gameState.maxHealth || 100
+                    );
+                }
+                return {
+                    text: "깊은 맛이 나는 스프입니다... 드로우의 비밀 레시피를 조금 변형했죠. (체력 +30 회복)",
+                    next: "kaerun_greeting"
+                };
+            
+            case 'luminate_tea':
+                // 마나 회복 +20
+                if (this.gameState.mana) {
+                    this.gameState.mana = Math.min(
+                        this.gameState.mana + 20,
+                        this.gameState.maxMana || 100
+                    );
+                }
+                return {
+                    text: "달빛을 닮은 차입니다... 마음이 편안해질 거예요. (마나 +20 회복)",
+                    next: "kaerun_greeting"
+                };
+            
+            default:
+                return {
+                    text: "맛있게 드셨나요...?",
+                    next: "kaerun_greeting"
+                };
+        }
     }
 } 

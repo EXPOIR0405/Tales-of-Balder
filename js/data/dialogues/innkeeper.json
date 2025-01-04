@@ -1,0 +1,108 @@
+{
+    "id": "kaerun",
+    "name": "케이런",
+    "location": "moonshadow_inn",
+    "image": "./assets/images/npc/inn_Kaerun.png",
+    "initialDialog": "kaerun_greeting",
+    "conversations": {
+        "kaerun_greeting": {
+            "text": "안녕하세요... 여기가 '달 그림자 여관'입니다. 필요하신 게 있으시면 말씀만 해주세요.",
+            "choices": [
+                {
+                    "text": "방을 구하고 싶습니다",
+                    "next": "kaerun_room"
+                },
+                {
+                    "text": "특별한 요리가 있나요?",
+                    "next": "kaerun_food"
+                },
+                {
+                    "text": "최근 마을 소식이 있나요?",
+                    "next": "kaerun_info_ask"
+                },
+                {
+                    "text": "아니오, 괜찮습니다",
+                    "next": "kaerun_goodbye"
+                }
+            ]
+        },
+        "kaerun_room": {
+            "text": "방이요? 네, 준비되어 있습니다. 한밤에 8 골드인데... 괜찮으시겠어요?",
+            "choices": [
+                {
+                    "text": "[8골드] 방을 빌리겠습니다",
+                    "actionType": "rentRoom",
+                    "cost": 8,
+                    "conditionType": "hasGold",
+                    "requiredGold": 8,
+                    "resultText": "감사합니다... 편안히 쉬실 수 있도록 최선을 다하겠습니다.",
+                    "next": "kaerun_greeting"
+                },
+                {
+                    "text": "음... 나중에 다시 올게요",
+                    "next": "kaerun_greeting"
+                }
+            ]
+        },
+        "kaerun_food": {
+            "text": "네... 저희 여관의 특별 메뉴가 있습니다. 드로우의 전통 요리법을 응용한 '에버나이트 스프'와 '루미네이트 차'를 준비하고 있어요.",
+            "choices": [
+                {
+                    "text": "[5골드] 에버나이트 스프",
+                    "actionType": "buyFood",
+                    "itemId": "evernight_soup",
+                    "cost": 5,
+                    "conditionType": "hasGold",
+                    "requiredGold": 5,
+                    "resultText": "깊은 맛이 나는 스프입니다... 드로우의 비밀 레시피를 조금 변형했죠.",
+                    "next": "kaerun_greeting"
+                },
+                {
+                    "text": "[3골드] 루미네이트 차",
+                    "actionType": "buyFood",
+                    "itemId": "luminate_tea",
+                    "cost": 3,
+                    "conditionType": "hasGold",
+                    "requiredGold": 3,
+                    "resultText": "달빛을 닮은 차입니다... 마음이 편안해질 거예요.",
+                    "next": "kaerun_greeting"
+                },
+                {
+                    "text": "나중에 먹어볼게요",
+                    "next": "kaerun_greeting"
+                }
+            ]
+        },
+        "kaerun_info_ask": {
+            "text": "흠, 조심스러운 이야기인데... 마을 근처에서 이상한 의식을 준비하는 사람들이 있다고 들었어요.",
+            "choices": [
+                {
+                    "text": "자세히 말씀해 주시겠어요?",
+                    "next": "kaerun_info_detail"
+                },
+                {
+                    "text": "다른 이야기를 하고 싶습니다",
+                    "next": "kaerun_greeting"
+                }
+            ]
+        },
+        "kaerun_info_detail": {
+            "text": "저... 알게 된 건데요, 도시의 하수구에서 누군가 숨어 살고 있다더군요. 위험해 보이니 조심하세요.",
+            "choices": [
+                {
+                    "text": "알려주셔서 감사합니다",
+                    "next": "kaerun_greeting"
+                }
+            ]
+        },
+        "kaerun_goodbye": {
+            "text": "네... 다음에 또 들러주세요. 언제든 환영입니다.",
+            "choices": [
+                {
+                    "text": "대화 종료",
+                    "actionType": "endDialogue"
+                }
+            ]
+        }
+    }
+} 

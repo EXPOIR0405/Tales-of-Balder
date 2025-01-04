@@ -27,7 +27,7 @@ export const locations = {
                 action: () => game.dialogue.startDialogue('merchant')
             },
             {
-                text: '여관으로 이동',
+                text: '달 그림자 여관으로 이동',
                 action: () => game.handleLocationChange('inn')
             },
             {
@@ -37,11 +37,11 @@ export const locations = {
         ]
     },
     inn: {
-        title: '졸린 고블린 여관',
-        description: '도시에서 가장 유명한 여관입니다. 벽난로의 따뜻한 불빛이 실내를 밝히고 있습니다.',
+        title: '달 그림자 여관 (Moonshadow Inn)',
+        description: '도시의 조용한 구석에 자리 잡은 여관입니다. 달빛처럼 은은한 조명이 실내를 비추고 있으며, 드로우 특유의 세련된 장식들이 벽을 따라 놓여있습니다.',
         choices: [
             {
-                text: '여관주인과 대화하기',
+                text: '여관주인 케이런과 대화하기',
                 action: () => game.dialogue.startDialogue('innkeeper')
             },
             {
