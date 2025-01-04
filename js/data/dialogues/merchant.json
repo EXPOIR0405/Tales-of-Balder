@@ -1,0 +1,99 @@
+{
+    "id": "tom",
+    "name": "톰",
+    "location": "tom_stall",
+    "image": "./assets/images/npc/tom.png",
+    "initialDialog": "tom_greeting",
+    "conversations": {
+        "tom_greeting": {
+            "text": "어서 와! 친구! 이 광장에서 이런 보물들을 찾긴 쉽지 않을걸. 뭐든 필요한 게 있나?",
+            "choices": [
+                {
+                    "text": "물건을 보고 싶습니다",
+                    "next": "tom_shop",
+                    "conditionType": "always"
+                },
+                {
+                    "text": "[정보] 최근 마을 소식이 있나요?",
+                    "next": "tom_gossip",
+                    "conditionType": "hasGold",
+                    "requiredGold": 5
+                },
+                {
+                    "text": "아니오, 괜찮습니다",
+                    "next": "tom_goodbye"
+                }
+            ]
+        },
+        "tom_shop": {
+            "text": "아, 내 눈은 결코 잘못되지 않지. 당신, 이게 필요할 걸?",
+            "choices": [
+                {
+                    "text": "검을 살펴본다 (10 골드)",
+                    "actionType": "buyItem",
+                    "itemId": "sword",
+                    "cost": 10
+                },
+                {
+                    "text": "회복 물약을 살펴본다 (5 골드)",
+                    "actionType": "buyItem",
+                    "itemId": "healing_potion",
+                    "cost": 5,
+                    "conditionType": "hasGold",
+                    "requiredGold": 5
+                },
+                {
+                    "text": "다른 이야기를 하고 싶습니다",
+                    "next": "tom_greeting"
+                }
+            ]
+        },
+        "tom_gossip": {
+            "text": "정보는 공짜가 아니야, 친구. 5골드면 내가 아는 모든 걸 알려줄 테지. 자 어때?",
+            "choices": [
+                {
+                    "text": "[5골드] 여기 있습니다",
+                    "actionType": "payForInfo",
+                    "cost": 5,
+                    "conditionType": "hasGold",
+                    "requiredGold": 5,
+                    "resultText": "들어봐, 최근 마을 바깥 숲에서 이상한 그림자가 목격되고 있대. 뭔가 수상하지 않아?",
+                    "next": "tom_greeting"
+                },
+                {
+                    "text": "아니오, 괜찮습니다",
+                    "actionType": "showText",
+                    "resultText": "하, 농담하나? 세상에 공짜로 얻을 수 있는 건 없다네. 다시 돌아오게나, 돈이 준비되면.",
+                    "next": "tom_goodbye"
+                }
+            ]
+        },
+        "tom_goodbye": {
+            "text": "다음에 또 들러! 난 언제나 여기서 기다리고 있을테니까",
+            "choices": [
+                {
+                    "text": "대화 종료",
+                    "actionType": "endDialogue"
+                }
+            ]
+        },
+        "tom_no_money": {
+            "text": "돈이 부족하잖아, 친구. 다시 올 때는 주머니를 꽉 채워오라고.",
+            "choices": [
+                {
+                    "text": "죄송합니다",
+                    "next": "tom_greeting"
+                }
+            ]
+        },
+        "tom_cannot": {
+            "text": "공짜로 들으려고?",
+            "choices": [
+                {
+                    "text": "... (쪼잔하긴)",
+                    "next": "tom_greeting"
+                }
+            ]
+        }
+    }
+} 
