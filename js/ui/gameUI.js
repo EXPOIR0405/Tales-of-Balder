@@ -6,9 +6,6 @@ export class GameUI {
 
     // 대화 업데이트 함수 추가
     updateDialog(npcName, text, choices) {
-        this.elements.locationTitle.textContent = npcName;
-        this.elements.descriptionText.textContent = text;
-
         // NPC 이미지 업데이트
         const npcImage = document.getElementById('npc-image');
         const npcData = Object.values(this.game.dialogue.dialogues).find(
@@ -16,19 +13,19 @@ export class GameUI {
         );
 
         if (npcData && npcData.image) {
-            npcImage.style.backgroundImage = `url('${npcData.image}')`;
+            npcImage.src = npcData.image;
             npcImage.classList.remove('hidden');
         } else {
             npcImage.classList.add('hidden');
         }
 
-        // 대화창 제목 업데이트
-        this.elements.locationTitle.textContent = npcName;
+        // 이름 업데이트
+        document.querySelector('.npc-name').textContent = `- ${npcName} -`;
         
         // 대화 내용 업데이트
         this.elements.descriptionText.textContent = text;
 
-        //골드 상태 업데이트
+        // 골드 상태 업데이트
         document.getElementById('player-gold').textContent = this.game.state.gold;
         
         // 선택지 업데이트
@@ -42,7 +39,6 @@ export class GameUI {
                     if (choice.action) {
                         const result = choice.action();
                         if (result && result.next) {
-                            //action의 결과로 받은 텍스트와 다음 대화 데이터를 업데이트
                             this.elements.descriptionText.textContent = result.text;
                             if (result.next) {
                                 this.game.dialogue.showDialogue(result.next);
@@ -62,7 +58,10 @@ export class GameUI {
         // 대화가 끝난 후 NPC 이미지 숨기기
         const npcImage = document.getElementById('npc-image');
         npcImage.classList.add('hidden');
-    
+
+        // NPC 이름 지우기
+        document.querySelector('.npc-name').textContent = '';
+        
         // 대화가 끝난 후 원래 위치 정보로 되돌리기
         this.updateUI();
         this.showChoices(this.game.state.currentLocation.choices);
@@ -92,16 +91,17 @@ export class GameUI {
                     <!-- 위치 정보 -->
                     <h2 id="location-title" class="text-2xl font-serif mb-4 text-bg3-gold"></h2>
                     
-                    <!-- 대화/설명창 -->
-                    <div id="dialogue-box" class="dialogue-box mb-4">
-                        <div class="flex items-start gap-4">
-                            <div id="npc-image" class="npc-portrait hidden"></div>
-                            <p id="description-text"></p>
+                    <!-- 대화/설명창 수정된 구조 -->
+                    <div id="dialogue-box" class="dialogue-container">
+                        <div class="dialogue-header">
+                            <img id="npc-image" class="npc-portrait hidden" src="" alt="">
+                        </div>
+                        <div class="dialogue-content">
+                            <div class="npc-name"></div>
+                            <div id="description-text" class="dialogue-text"></div>
+                            <div id="choices-container" class="dialogue-choices"></div>
                         </div>
                     </div>
-
-                    <!-- 선택지 컨테이너 -->
-                    <div id="choices-container" class="space-y-2"></div>
                 </div>
 
                 <!-- 하단 인벤토리 바 -->
