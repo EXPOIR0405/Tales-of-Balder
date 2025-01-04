@@ -1,11 +1,12 @@
 // 게임 상태 관리(hp, 골드, 인벤토리, 현재 위치 정보, 위치 변경 처리)
 
 import { locations } from '../data/locations.js';
+// import { InventorySystem } from './inventorySystem.js';
 
 export class GameState {
     constructor() {
-        this.gold = 0;
-        this.inventory = [];
+        this._gold = 0;
+        this.inventory =[];
         this.hp = 100;
         this.maxHp = 100;
         this.currentLocation = null;
@@ -14,6 +15,15 @@ export class GameState {
         this.currentNPC = null;
         this.currentDialogue = null;
         this.game = null;
+    }
+
+    get gold() {
+        return this._gold;
+    }
+
+    set gold(value) {
+        this._gold = value;
+        document.getElementById('player-gold').textContent = this._gold;
     }
 
     setUI(ui) {

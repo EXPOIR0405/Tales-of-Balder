@@ -11,19 +11,25 @@ export class GameUI {
 
         // NPC 이미지 업데이트
         const npcImage = document.getElementById('npc-image');
-        if (npcName === '상인') {
-            npcImage.style.backgroundImage = "url('/game/assets/images/npc/tom.png')";
+        const npcData = Object.values(this.game.dialogue.dialogues).find(
+            npc => npc.name === npcName
+        );
+
+        if (npcData && npcData.image) {
+            npcImage.style.backgroundImage = `url('${npcData.image}')`;
             npcImage.classList.remove('hidden');
         } else {
             npcImage.classList.add('hidden');
         }
-
 
         // 대화창 제목 업데이트
         this.elements.locationTitle.textContent = npcName;
         
         // 대화 내용 업데이트
         this.elements.descriptionText.textContent = text;
+
+        //골드 상태 업데이트
+        document.getElementById('player-gold').textContent = this.game.state.gold;
         
         // 선택지 업데이트
         this.elements.choicesContainer.innerHTML = '';
