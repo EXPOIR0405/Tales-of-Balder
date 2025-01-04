@@ -1,3 +1,5 @@
+import { ITEMS } from '../data/items.js';
+
 export class DialogueLogic {
     constructor(gameState) {
         this.gameState = gameState;
@@ -27,7 +29,7 @@ export class DialogueLogic {
             case 'rentRoom':
                 return this.rentRoom(action.cost);
             case 'buyFood':
-                return this.buyFood(action.itemId, action.cost);
+                return this.buyFood(action.itemId, action.cost, action);
             case 'showText':
                 return { 
                     text: action.resultText,
@@ -100,7 +102,7 @@ export class DialogueLogic {
         };
     }
 
-    buyFood(itemId, cost) {
+    buyFood(itemId, cost, choice) {
         if (this.gameState.gold < cost) {
             return {
                 text: "죄송합니다만... 돈이 부족하신 것 같네요.",
@@ -110,39 +112,31 @@ export class DialogueLogic {
 
         this.gameState.gold -= cost;
         
-        // 음식 효과 적용
-        switch(itemId) {
-            case 'evernight_soup':
-                // 체력 회복 +30
-                if (this.gameState.health) {
-                    this.gameState.health = Math.min(
-                        this.gameState.health + 30,
-                        this.gameState.maxHealth || 100
-                    );
-                }
-                return {
-                    text: "깊은 맛이 나는 스프입니다... 드로우의 비밀 레시피를 조금 변형했죠. (체력 +30 회복)",
-                    next: "kaerun_greeting"
-                };
+        // 아이템 데이터 가져오기
+        const itemData = ITEMS[itemId];
+        
+        // 인벤토리에 아이템 추가
+        const slots = document.querySelectorAll('.inventory-slot');
+        const emptySlot = Array.from(slots).find(slot => !slot.querySelector('img'));
+        
+        if (emptySlot) {
+            const img = document.createElement('img');
+            img.src = itemData.image;
+            img.alt = itemData.name;
+            img.dataset.itemId = itemData.id;
+            emptySlot.appendChild(img);
             
-            case 'luminate_tea':
-                // 마나 회복 +20
-                if (this.gameState.mana) {
-                    this.gameState.mana = Math.min(
-                        this.gameState.mana + 20,
-                        this.gameState.maxMana || 100
-                    );
-                }
-                return {
-                    text: "달빛을 닮은 차입니다... 마음이 편안해질 거예요. (마나 +20 회복)",
-                    next: "kaerun_greeting"
-                };
-            
-            default:
-                return {
-                    text: "맛있게 드셨나요...?",
-                    next: "kaerun_greeting"
-                };
+            // 툴팁 추가 (아이템 설명)
+            const tooltip = document.createElement('div');
+            tooltip.className = 'item-tooltip';
+            tooltip.textContent = `${itemData.name}\n${itemData.description}`;
+            emptySlot.appendChild(tooltip);
         }
+
+        // JSON에서 정의된 resultText와 next를 그대로 반환
+        return {
+            text: choice.resultText,
+            next: choice.next
+        };
     }
 } 

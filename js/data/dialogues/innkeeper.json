@@ -65,6 +65,7 @@
                     "conditionType": "hasGold",
                     "requiredGold": 3,
                     "resultText": "달빛을 닮은 차입니다... 마음이 편안해질 거예요.",
+                    "image": "./assets/images/food/tea.png",
                     "next": "kaerun_greeting"
                 },
                 {

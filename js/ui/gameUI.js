@@ -15,8 +15,10 @@ export class GameUI {
         // 현재 표시된 NPC와 같은 경우 이미지 업데이트 건너뛰기
         if (npcImage.dataset.currentNpc !== npcName) {
             npcImage.classList.add('hidden');
-            
+            npcImage.src = '';  // 이미지 소스 초기화
+
             if (npcData && npcData.image) {
+                // 새 이미지 로드
                 const newImage = new Image();
                 newImage.onload = () => {
                     npcImage.src = npcData.image;
@@ -28,7 +30,7 @@ export class GameUI {
         }
 
         // 이름 업데이트
-        document.querySelector('.npc-name').textContent = `- ${npcName} -`;
+        document.querySelector('.npc-name').textContent = npcName;
         
         // 대화 내용 업데이트
         this.elements.descriptionText.textContent = text;

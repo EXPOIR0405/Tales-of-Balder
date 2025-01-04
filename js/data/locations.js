@@ -24,7 +24,7 @@ export const locations = {
         choices: [
             {
                 text: '상인과 대화하기',
-                action: () => game.dialogue.startDialogue('merchant')
+                action: () => game.dialogue.startDialogue('tom')
             },
             {
                 text: '달 그림자 여관으로 이동',
@@ -42,7 +42,7 @@ export const locations = {
         choices: [
             {
                 text: '여관주인 케이런과 대화하기',
-                action: () => game.dialogue.startDialogue('innkeeper')
+                action: () => game.dialogue.startDialogue('kaerun')
             },
             {
                 text: '광장으로 돌아가기',

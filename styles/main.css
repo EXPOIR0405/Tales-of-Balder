@@ -72,11 +72,46 @@ body {
     background: rgba(0, 0, 0, 0.5);
     margin: 0.25rem;
     transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 인벤토리 아이템 이미지 */
+.inventory-slot img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
 }
 
 .inventory-slot:hover {
     border-color: var(--bg3-gold);
     box-shadow: 0 0 10px rgba(196, 164, 132, 0.3);
+}
+
+/* 아이템 툴팁 */
+.item-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid var(--bg3-gold);
+    padding: 0.5rem;
+    border-radius: 4px;
+    white-space: pre-line;
+    z-index: 1000;
+    color: var(--bg3-gold);
+    font-size: 0.9rem;
+    text-align: center;
+    min-width: 150px;
+}
+
+/* 호버 시 툴팁 표시 */
+.inventory-slot:hover .item-tooltip {
+    display: block;
 }
 
 /* 메뉴 버튼 */

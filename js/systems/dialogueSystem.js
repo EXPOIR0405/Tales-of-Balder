@@ -12,42 +12,67 @@ export class DialogueSystem {
     async loadDialogues() {
         try {
             console.log('Loading dialogues...');
-            const merchantData = await fetch('/js/data/dialogues/merchant.json')
-                .then(response => response.json());
-            this.dialogues.merchant = merchantData;
             
-            const innkeeperData = await fetch('/js/data/dialogues/innkeeper.json')
-                .then(response => response.json());
-            this.dialogues.innkeeper = innkeeperData;
+            // 케이런 대화 데이터 로드
+            const innkeeperResponse = await fetch('./js/data/dialogues/innkeeper.json');
+            if (!innkeeperResponse.ok) {
+                throw new Error(`HTTP error! status: ${innkeeperResponse.status}`);
+            }
+            const innkeeperData = await innkeeperResponse.json();
+            console.log('Loaded innkeeper data:', innkeeperData);  // 로그 추가
+            this.dialogues.kaerun = innkeeperData;
             
-            console.log('Loaded dialogues:', this.dialogues);
+            // 상인 대화 데이터 로드
+            const merchantResponse = await fetch('./js/data/dialogues/merchant.json');
+            if (!merchantResponse.ok) {
+                throw new Error(`HTTP error! status: ${merchantResponse.status}`);
+            }
+            const merchantData = await merchantResponse.json();
+            this.dialogues.tom = merchantData;
+            
+            console.log('All loaded dialogues:', this.dialogues);  // 로그 추가
         } catch (error) {
             console.error('Error loading dialogues:', error);
         }
     }
 
     startDialogue(npcId) {
-        console.log('Starting dialogue with:', npcId);
-        console.log('Available dialogues:', this.dialogues);
+        console.log('Starting dialogue with NPC:', npcId);
+        console.log('Current dialogues state:', this.dialogues);
         
-        const npc = this.dialogues[npcId];
-        if (!npc) {
+        const npcData = this.dialogues[npcId];
+        if (!npcData) {
             console.error('No dialogue found for NPC:', npcId);
             return;
         }
-
-        this.currentNPC = npc;
-        console.log('Loading dialogue:', npc.initialDialog);
-        this.showDialogue(npc.initialDialog);
+        
+        this.currentNPC = npcData;
+        
+        // NPC 이미지 업데이트
+        const npcImage = document.getElementById('npc-image');
+        npcImage.src = npcData.image;
+        npcImage.classList.remove('hidden');
+        
+        this.showDialogue(npcData.initialDialog);
     }
 
-    showDialogue(dialogueId) {
-        console.log('Showing dialogue:', dialogueId);
-        const dialogue = this.currentNPC.conversations[dialogueId];
+    showDialogue(dialogId) {
+        const dialogue = this.currentNPC.conversations[dialogId];
         if (!dialogue) return;
 
-        this.currentDialogue = dialogueId;
-        this.gameState.setDialogueState(this.currentNPC.id, dialogueId);
+        // NPC 이미지 처리
+        const npcImage = document.getElementById('npc-image');
+        
+        // 임시 이미지가 있는 경우 (음식 등)
+        if (dialogue.tempImage) {
+            npcImage.src = dialogue.tempImage;
+        } else {
+            // 일반 대화의 경우 NPC 이미지
+            npcImage.src = this.currentNPC.image;
+        }
+
+        this.currentDialogue = dialogId;
+        this.gameState.setDialogueState(this.currentNPC.id, dialogId);
 
         this.gameState.ui.updateDialog(
             this.currentNPC.name,
