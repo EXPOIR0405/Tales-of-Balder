@@ -5,9 +5,9 @@ export class DialogueSystem {
         // NPC 위치 정의
         this.npcLocations = {
             merchant: {
-                id: 'merchant_shop',
-                title: '상인의 가게',
-                description: '다양한 물건들이 진열된 상인의 가게입니다.',
+                id: 'tom_stall',
+                title: '톰의 상점',
+                description: '톰의 가판대는 잡동사니와 초보 탐험가들을 위한 물건들이 전시되어 있습니다. 어쩌면 당신도 유용한 걸 찾을지도요?',
                 choices: [],  // 대화 선택지로 대체됨
                 parentLocation: 'city'  // 돌아갈 위치
             }
@@ -17,32 +17,32 @@ export class DialogueSystem {
         // 대화 데이터 정의
         this.dialogues = {
             merchant: {
-                id: 'merchant',
-                name: '상인',
-                location: 'merchant_shop',  // NPC 위치 ID
-                initialDialog: 'merchant_greeting',
+                id: 'tom',
+                name: '톰',
+                location: 'tom_stall',  // NPC 위치 ID
+                initialDialog: 'tom_greeting',
                 conversations: {
-                    merchant_greeting: {
-                        text: "어서오세요! 무엇을 도와드릴까요?",
+                    tom_greeting: {
+                        text: "어서 와! 친구! 이 광장에서 이런 보물들을 찾긴 쉽지 않을걸. 뭐든 필요한 게 있나?",
                         choices: [
                             {
                                 text: "물건을 보고 싶습니다",
-                                next: "merchant_shop",
+                                next: "tom_shop",
                                 condition: () => true
                             },
                             {
                                 text: "[정보] 최근 마을 소식이 있나요?",
-                                next: "merchant_gossip",
+                                next: "tom_gossip",
                                 condition: () => this.gameState.gold >= 5
                             },
                             {
                                 text: "아니오, 괜찮습니다",
-                                next: "merchant_goodbye"
+                                next: "tom_goodbye"
                             }
                         ]
                     },
-                    merchant_shop: {
-                        text: "이런 물건들이 있습니다.",
+                    tom_shop: {
+                        text: "아, 내 눈은 결코 잘못되지 않지. 당신, 이게 필요할 걸?",
                         choices: [
                             {
                                 text: "검을 살펴본다 (10 골드)",
@@ -50,33 +50,44 @@ export class DialogueSystem {
                                 condition: () => this.gameState.gold >= 10
                             },
                             {
+                                text: "회복 물약을 살펴본다 (5 골드)",
+                                action: () => this.buyItem('healing_potion', 5),
+                                condition: () => this.gameState.gold >= 5
+                            },
+                            {
                                 text: "다른 이야기를 하고 싶습니다",
-                                next: "merchant_greeting"
+                                next: "tom_greeting"
                             }
                         ]
                     },
-                    merchant_gossip: {
-                        text: "5골드를 주시면 최근 소식을 알려드리죠...",
+                    tom_gossip: {
+                        text: "정보는 공짜가 아니야, 친구. 5골드면 내가 아는 모든 걸 알려줄 테지. 자 어때?",
                         choices: [
                             {
                                 text: "[5골드] 여기 있습니다",
                                 action: () => {
                                     this.gameState.gold -= 5;
                                     return {
-                                        text: "최근 고블린들이 마을 근처에서 자주 목격된다고 하네요. 조심하시는 게 좋을 거예요.",
-                                        next: "merchant_greeting"
+                                        text: "들어봐, 최근 마을 바깥 숲에서 이상한 그림자가 목격되고 있대. 뭔가 수상하지 않아?",
+                                        next: "tom_greeting"
                                     };
                                 },
                                 condition: () => this.gameState.gold >= 5
                             },
                             {
                                 text: "아니오, 괜찮습니다",
-                                next: "merchant_greeting"
+                                action: () => {
+                                    this.gameState.gold -= 0;
+                                    return {
+                                        text: "하, 농담하나? 세상에 공짜로 얻을 수 있는 건 없다네. 다시 돌아오게나, 돈이 준비되면.",
+                                        next: "tom_goodbye"
+                                    };
+                                }
                             }
                         ]
                     },
-                    merchant_goodbye: {
-                        text: "다음에 또 들러주세요!",
+                    tom_goodbye: {
+                        text: "다음에 또 들러! 난 언제나 여기서 기다리고 있을테니까",
                         choices: [
                             {
                                 text: "대화 종료",
@@ -84,21 +95,21 @@ export class DialogueSystem {
                             }
                         ]
                     },
-                    merchant_no_money: {
-                        text: "죄송하지만 골드가 부족하시네요...",
+                    tom_no_money: {
+                        text: "돈이 부족하잖아, 친구. 다시 올 때는 주머니를 꽉 채워오라고.",
                         choices: [
                             {
                                 text: "죄송합니다",
-                                next: "merchant_greeting"
+                                next: "tom_greeting"
                             }
                         ]
                     },
-                    merchant_cannot: {
-                        text: "저도 먹고 살아야죠. 엣헴...",
+                    tom_cannot: {
+                        text: "이 물건들은 장난감이 아니야, 친구. 제대로 준비해서 오라고.",
                         choices: [
                             {
                                 text: "알겠습니다",
-                                next: "merchant_greeting"
+                                next: "tom_greeting"
                             }
                         ]
                     }
@@ -153,7 +164,14 @@ export class DialogueSystem {
                     if (choice.action) {
                         const result = choice.action();
                         if (result && result.text) {
-                            this.showDialogue(result.next);
+                            //먼저 텍스트를 업데이트 하고
+                            this.gameState.ui.updateDialog(
+                                this.currentNPC.name,
+                                result.text,
+                                this.filterChoices(this.currentNPC.conversations[result.next].choices)
+                            );
+                            //그리고 다음 대화 데이터를 업데이트
+                            this.currentDialogue = result.next;
                         }
                     } else if (choice.next) {
                         this.showDialogue(choice.next);
@@ -187,12 +205,12 @@ export class DialogueSystem {
             this.gameState.gold -= cost;
             this.gameState.inventory.push(itemId);
             return {
-                text: "거래 감사합니다!",
+                text: "좋은 거래야! 너도 만족하겠지",
                 next: "merchant_greeting"
             };
         }
         return {
-            text: "골드가 부족하시네요...",
+            text: "이 정도 돈이 없는데 어떻게 발더스 게이트에서 살아남으려고?",
             next: "merchant_greeting"
         };
     }

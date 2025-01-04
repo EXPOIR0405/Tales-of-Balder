@@ -12,7 +12,7 @@ export class GameUI {
         // NPC 이미지 업데이트
         const npcImage = document.getElementById('npc-image');
         if (npcName === '상인') {
-            npcImage.style.backgroundImage = "url('/assets/images/npc/tom.png')";
+            npcImage.style.backgroundImage = "url('/game/assets/images/npc/tom.png')";
             npcImage.classList.remove('hidden');
         } else {
             npcImage.classList.add('hidden');
@@ -34,7 +34,14 @@ export class GameUI {
                 button.textContent = choice.text;
                 button.onclick = () => {
                     if (choice.action) {
-                        choice.action();
+                        const result = choice.action();
+                        if (result && result.next) {
+                            //action의 결과로 받은 텍스트와 다음 대화 데이터를 업데이트
+                            this.elements.descriptionText.textContent = result.text;
+                            if (result.next) {
+                                this.game.dialogue.showDialogue(result.next);
+                            }
+                        }
                     } else if (choice.next) {
                         this.game.dialogue.showDialogue(choice.next);
                     }
