@@ -1,15 +1,21 @@
 import { GameState } from './systems/gameState.js';
 import { GameUI } from './ui/gameUI.js';
-import { DialogueSystem } from './systems/dialogueSystem.js';  // 추가
+import { DialogueSystem } from './systems/dialogueSystem.js';
+import { OpeningSystem } from './systems/openingSystem.js';
 
 class Game {
     constructor() {
-        this.state = new GameState(); // UI 없이 먼저 생성
-        this.ui = new GameUI(this);
+        this.state = new GameState();
+       this.ui = new GameUI(this);
         this.dialogue = new DialogueSystem(this.state);
+        this.opening = new OpeningSystem(this);
         
-        // GameState에 UI 참조 추가
         this.state.setUI(this.ui);
+    }
+
+    async start() {
+        console.log('Starting game...');
+        await this.opening.start();
     }
 
     init() {
@@ -39,4 +45,4 @@ class Game {
 }
 
 window.game = new Game();
-window.game.init();
+window.game.start();
