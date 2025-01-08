@@ -56,6 +56,16 @@ git clone [저장소 URL]
 - 더 많은 NPC와 대화 옵션
 - 캐릭터 성장 시스템
 
+## 라이선스
+
+이 프로젝트는 Apache License 2.0을 따릅니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참고해 주세요.
+
+### 법적 고지
+- 이 게임은 Baldur's Gate 3의 팬 작품이자 패러디 게임입니다.
+- 이 프로젝트는 Larian Studios와 무관한 비영리 팬 프로젝트입니다.
+- Baldur's Gate 3의 모든 저작권은 Larian Studios에 있습니다.
+- 이 프로젝트는 원작에 대한 존경을 담아 제작되었습니다.
+
 ---
 
 ###### ✨ 계약 이행 선언문 ✨
